@@ -81,7 +81,7 @@ class PlaneGame(object):
         pygame.sprite.groupcollide(self.hero.bulletGroup, self.enemyGroup, True, True)
         enemies = pygame.sprite.spritecollide(self.hero, self.enemyGroup,True)
         if len(enemies) > 0:
-            self.hero.kill()
+            PlaneGame.__gameOver()
 
         pass
 
@@ -103,7 +103,7 @@ class PlaneGame(object):
     @staticmethod
     def __gameOver():
         '''游戏结束'''
-        print("游戏结束")
+        # print("游戏结束")
         pygame.quit()
         exit()
 

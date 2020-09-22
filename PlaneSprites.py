@@ -72,7 +72,7 @@ class Hero(GameSprites):
         self.bulletGroup = pygame.sprite.Group()
 
     def fire(self):
-        print("发射子弹。。")
+        # print("发射子弹。。")
         bullet = Bullet()
         bullet.rect.bottom = self.rect.y - 10
         bullet.rect.centerx = self.rect.centerx
@@ -94,4 +94,5 @@ class Bullet(GameSprites):
 
 
     def __del__(self):
-        print("子弹被销毁")
+        # print("子弹被销毁")
+        pass
