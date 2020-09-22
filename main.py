@@ -11,12 +11,18 @@ class PlaneGame(object):
         self.__createSprites()
 
         pygame.time.set_timer(CREATE_ENEMY_EVENT, 1000)
+        pygame.time.set_timer(HERO_FIRE_EVENT, 300)
 
 
     def __createSprites(self):
         bg1 = BackGround()
         bg2 = BackGround(True)
         self.backGroup = pygame.sprite.Group(bg1,bg2)
+
+        self.enemyGroup = pygame.sprite.Group()
+
+        self.hero = Hero()
+        self.heroGroup = pygame.sprite.Group(self.hero)
 
 
 
@@ -40,15 +46,43 @@ class PlaneGame(object):
     def __eventHandler(self):
         '''事件监听'''
         for event in pygame.event.get():
-            print(event)
             if event.type == pygame.QUIT:
                 PlaneGame.__gameOver()
             elif event.type == CREATE_ENEMY_EVENT:
-                print("敌机出场")
+                enemy = Enemy()
+                self.enemyGroup.add(enemy)
+            elif event.type == HERO_FIRE_EVENT:
+                self.hero.fire()
+
+        keysPressed = pygame.key.get_pressed()
+
+        if keysPressed[pygame.K_RIGHT] or keysPressed[pygame.K_d]:
+            if self.hero.rect.x < (SCREEN_RECT.width - self.hero.rect.width):
+
+                self.hero.rect.centerx += 2
+        elif keysPressed[pygame.K_LEFT] or keysPressed[pygame.K_a]:
+            if self.hero.rect.x > 0 :
+
+                self.hero.rect.centerx -= 2
+        elif keysPressed[pygame.K_UP] or keysPressed[pygame.K_w]:
+            if self.hero.rect.y > 0:
+
+                self.hero.rect.y -= 2
+        elif keysPressed[pygame.K_DOWN] or keysPressed[pygame.K_s]:
+            if self.hero.rect.bottom < SCREEN_RECT.height:
+
+                self.hero.rect.y += 2
+
+
         pass
 
     def __checkCollide(self):
         '''碰撞监测'''
+        pygame.sprite.groupcollide(self.hero.bulletGroup, self.enemyGroup, True, True)
+        enemies = pygame.sprite.spritecollide(self.hero, self.enemyGroup,True)
+        if len(enemies) > 0:
+            self.hero.kill()
+
         pass
 
     def __updateSprites(self):
@@ -56,7 +90,15 @@ class PlaneGame(object):
         self.backGroup.update()
         self.backGroup.draw(self.screen)
 
-        pass
+        self.enemyGroup.update()
+        self.enemyGroup.draw(self.screen)
+
+        self.heroGroup.update()
+        self.heroGroup.draw(self.screen)
+
+        self.hero.bulletGroup.update()
+        self.hero.bulletGroup.draw(self.screen)
+
 
     @staticmethod
     def __gameOver():
